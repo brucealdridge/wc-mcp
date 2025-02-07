@@ -4,16 +4,11 @@ A MCP (Multi-Command Protocol) server for interacting with WooCommerce. This ser
 
 ## Installation
 
-1. Clone the repository
-2. Create a virtual environment and activate it:
-   ```bash
-   python -m venv .venv
-   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-   ```
-3. Install dependencies:
-   ```bash
-   pip install -r wc-server-python/requirements.txt
-   ```
+```
+uv venv 
+source .venv/bin/activate 
+uv pip install -r requirements.txt
+```
 
 ## Configuration
 
@@ -24,7 +19,7 @@ A MCP (Multi-Command Protocol) server for interacting with WooCommerce. This ser
 
 2. Configure your WooCommerce settings in the `.env` file:
    ```plaintext
-   WOOCOMMERCE_API_BASE=your_site_url/wp-json/wc/v3
+   WOOCOMMERCE_API_BASE=http://your_site_url.com/wp-json/wc/v3
    WOOCOMMERCE_CONSUMER_KEY=your_consumer_key
    WOOCOMMERCE_CONSUMER_SECRET=your_consumer_secret
    ```
@@ -50,16 +45,36 @@ A MCP (Multi-Command Protocol) server for interacting with WooCommerce. This ser
 The server provides the following MCP tools:
 
 - `wc_list_products`: Fetches and displays a list of WooCommerce products
+- `wc_list_orders`: Fetches and displays a list of WooCommerce orders
+- `wc_get_order`: Fetches detailed information about a specific WooCommerce order
+- `wc_update_product`: Updates product details
+- `wc_manage_inventory`: Updates inventory for a WooCommerce product
+- `wc_update_order_status`: Updates the status of a WooCommerce order
+- `wc_add_order_note`: Adds a note to a WooCommerce order
 
 ## Usage
 
-Run the server:
+*Goose CLI*
 ```bash
-python wc-server-python/wc.py
+goose session --with-extension "uv --directory /path/to/wp-mcp run wc.py"
 ```
 
-The server will start and listen for MCP commands via standard input/output.
+*Claude*
 
-## Development
+Add the following to your `claude_desktop_config.json`:
 
-To add new WooCommerce API endpoints, extend the server by adding new tools using the `@mcp.tool()` decorator in `wc.py`.
+```
+{
+  "mcpServers": {
+    "wordpress": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/path/to/wp-mcp",
+        "run",
+        "wc.py"
+      ]
+    }
+  }
+}
+```
